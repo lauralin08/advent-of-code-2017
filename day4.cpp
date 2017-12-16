@@ -9,6 +9,7 @@ using std::ifstream;
 using std::string;
 using std::vector;
 
+// count the number of passphrases that have no repeats
 int getValidCount()
 {
   ifstream inputFile;
@@ -63,6 +64,7 @@ int getValidCount()
   return count;
 }
 
+// count passphrases with no repeats or anagrams
 int getValidCount2()
 {
   ifstream inputFile;

@@ -1,3 +1,4 @@
+// add together all digits that match the following digit
 function sumOfMatches1(input){
   var sum = 0;
   
@@ -13,6 +14,7 @@ function sumOfMatches1(input){
   return console.log(sum);
 }
 
+// add together all digits that match the digit halfway around the list
 function sumOfMatches2(input){
   var sum = 0;
 

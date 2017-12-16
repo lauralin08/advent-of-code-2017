@@ -1,9 +1,7 @@
+// find distance from coordinate to center of spiral grid
 function findManhattanDist(num){
   var gridSize = Math.ceil(Math.sqrt(num));
   var distFromEnd = gridSize * gridSize - num;
-  // 2x2 center = [0][1]
-  // 4x4 center = [1][2]
-  // 6x6 center = [2][3]
   var yCoord = gridSize - 1;
   var xCoord = gridSize - distFromEnd - 1;
   var centerYCoord = gridSize / 2; 
@@ -15,6 +13,7 @@ function findManhattanDist(num){
   console.log("Total: " + ((xCoord - centerXCoord) + (yCoord - centerYCoord)));
 }
 
+// use array to model the spiral where each term is the sum of all neighbors
 function findSpiralSum(num){
   var spiralArray = [];
   var value = 0;

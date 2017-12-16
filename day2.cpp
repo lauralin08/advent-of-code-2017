@@ -10,59 +10,57 @@ using std::cout;
 using std::endl;
 using std::vector;
 
-// int checksum()
-// {
-//   ifstream inputFile;
-//   string row;
-//   int largest, smallest, difference, total = 0;
+// add together the biggest difference in each row
+int checksum()
+{
+  ifstream inputFile;
+  string row;
+  int largest, smallest, difference, total = 0;
 
-//   inputFile.open("./inputDay2.txt");
+  inputFile.open("./inputDay2.txt");
 
-//   if (!inputFile.fail())
-//   {
-//     while (getline(inputFile, row))
-//     {
-//       char* input = new char[row.size() + 1];
-//       for (int i = 0; i < row.size(); i++)
-//       {
-//         input[i] = row[i];
-//       }
-//       input[row.size()] = '\0';
+  if (!inputFile.fail())
+  {
+    while (getline(inputFile, row))
+    {
+      char* input = new char[row.size() + 1];
+      for (int i = 0; i < row.size(); i++)
+      {
+        input[i] = row[i];
+      }
+      input[row.size()] = '\0';
 
-//       char* token = strtok(input, " \t\n");
-//       largest = smallest = atoi(token);
+      char* token = strtok(input, " \t\n");
+      largest = smallest = atoi(token);
 
-//       while (token != 0)
-//       {
-//         cout << atoi(token) << endl;
-//         int current = atoi(token);
-//         if (current < smallest)
-//         {
-//           smallest = current;
-//         }
-//         if (current > largest)
-//         {
-//           largest = current;
-//         }
+      while (token != 0)
+      {
+        int current = atoi(token);
+        if (current < smallest)
+        {
+          smallest = current;
+        }
+        if (current > largest)
+        {
+          largest = current;
+        }
 
-//         token = strtok(0, " \t\n");
-//       }
+        token = strtok(0, " \t\n");
+      }
 
-//       int difference = largest - smallest;
-//       cout << largest << " - " << smallest << " = " << difference << endl;
-//       cout << total << " + " << difference << " = ";
-//       total += difference;
-//       cout << total << endl << endl;
+      int difference = largest - smallest;
+      total += difference;
       
-//       delete []input;
-//     }
+      delete []input;
+    }
 
-//     inputFile.close();
-//   }
+    inputFile.close();
+  }
 
-//   return total;
-// }
+  return total;
+}
 
+// add the dividends of the two divisible numbers in each row
 int checksum2()
 {
   ifstream inputFile;
@@ -109,9 +107,7 @@ int checksum2()
           }
         }
       }
-      cout << total << " + " << quotient << " = ";
       total += quotient;
-      cout << total << endl << endl;
 
       rowInts.clear();
       delete []input;
@@ -120,13 +116,13 @@ int checksum2()
 
     inputFile.close();
   }
-
+  
   return total;
 }
 
 int main()
 {
-  // cout << checksum() << endl;
+  cout << checksum() << endl;
 
   cout << checksum2() << endl;
 
