@@ -17,7 +17,7 @@ int checksum()
   string row;
   int largest, smallest, difference, total = 0;
 
-  inputFile.open("./inputDay2.txt");
+  inputFile.open("./day2Input.txt");
 
   if (!inputFile.fail())
   {
@@ -68,7 +68,7 @@ int checksum2()
   int quotient, total = 0;
   vector<int> rowInts;
 
-  inputFile.open("./inputDay2.txt");
+  inputFile.open("./day2Input.txt");
 
   if (!inputFile.fail())
   {

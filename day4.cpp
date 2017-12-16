@@ -18,7 +18,7 @@ int getValidCount()
   bool valid;
   int count = 0;
 
-  inputFile.open("./inputDay4.txt");
+  inputFile.open("./day4Input.txt");
   if (!inputFile.fail())
   {
     while (getline(inputFile, passphrase))
@@ -73,7 +73,7 @@ int getValidCount2()
   bool valid;
   int count = 0;
 
-  inputFile.open("./inputDay4.txt");
+  inputFile.open("./day4Input.txt");
   if (!inputFile.fail())
   {
     while (getline(inputFile, passphrase))
