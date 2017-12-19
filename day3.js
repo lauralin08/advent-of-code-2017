@@ -15,116 +15,53 @@ function findManhattanDist(num){
 
 // use array to model the spiral where each term is the sum of all neighbors
 function findSpiralSum(num){
-  var spiralArray = [];
-  var value = 0;
-  var term = 0;
-  var gridSize;
+  var spiral = {};
+  var output;
+  spiral['0,0'] = 1;
+  
+  function getTerm(xCoord, yCoord){
+    const RELATIVE_COORDS = [[1,0], [1,1], [0,1], [-1,1], [-1,0], [-1,-1], [0,-1], [1,-1]];
+    var termCoord = xCoord + ',' + yCoord;
+    spiral[termCoord] = 0;
+    for (var i = 0; i < RELATIVE_COORDS.length; i++){
+      if (spiral[(xCoord+RELATIVE_COORDS[i][0]) + ',' + (yCoord+RELATIVE_COORDS[i][1])]){
+        spiral[termCoord] += spiral[(xCoord+RELATIVE_COORDS[i][0]) + ',' + (yCoord+RELATIVE_COORDS[i][1])];
+      }
+    }
+    
+    return (spiral[termCoord] > num);
+  }
 
-  while (term <= 1){
-    spiralArray[term] = 1;
-    term++
-  }
-  while (term <= 4){
-  spiralArray[term] = spiralArray[term - 1] + spiralArray[0];
-  term++;
-  spiralArray[term] = spiralArray[term - 1] + spiralArray[term - 2] + spiralArray[0];
-  term++;
-  }
-  while (term <= 10){
-    for (var i = 0; i <= 1; i++){
-      spiralArray[term] = spiralArray[term - 1] + spiralArray[i];
-      term++;
-      spiralArray[term] = spiralArray[term - 1] + spiralArray[term - 2] + spiralArray[i] + spiralArray[i + 1];
-      term++;
-      spiralArray[term] = spiralArray[term - 1] + spiralArray[i] + spiralArray[i + 1];
-      term++
+  var xCoord = 1, yCoord = 0;
+  getTerm(xCoord, yCoord);
+
+  while (spiral[xCoord + ',' + yCoord] < num){
+    while (spiral[(xCoord-1) + ',' + yCoord]){
+      yCoord++;
+      getTerm(xCoord, yCoord);
+    }
+    while (spiral[xCoord + ',' + (yCoord-1)]){
+      xCoord--;
+      getTerm(xCoord, yCoord);
+    }
+    while (spiral[(xCoord+1) + ',' + yCoord]){
+      yCoord--;
+      getTerm(xCoord, yCoord);
+    }
+    while (spiral[xCoord + ',' + (yCoord+1)]){
+      xCoord++;
+      getTerm(xCoord, yCoord);
     }
   }
-  while (term <= 18){
-    for (i = 2; i <= 4; i += 2){
-      spiralArray[term] = spiralArray[term - 1] + spiralArray[i];
-      term++;
-      spiralArray[term] = spiralArray[term - 1] + spiralArray[term - 2] + spiralArray[i] + spiralArray[i + 1];
-      term++;
-      spiralArray[term] = spiralArray[term - 1] + spiralArray[i] + spiralArray[i + 1] + spiralArray[i + 2];
-      term++;
-      spiralArray[term] = spiralArray[term - 1] + spiralArray[i + 1] + spiralArray[i + 2];
-      term++;
+  
+  for (var key in spiral){
+    if (spiral[key] > num){
+      console.log(spiral[key]);
+      return spiral[key];
     }
   }
-  while (term <= 28){
-    for (i = 6; i <= 9; i += 3){
-      spiralArray[term] = spiralArray[term - 1] + spiralArray[i];
-      term++;
-      spiralArray[term] = spiralArray[term - 1] + spiralArray[term - 2] + spiralArray[i] + spiralArray[i + 1];
-      term++;
-      spiralArray[term] = spiralArray[term - 1] + spiralArray[i] + spiralArray[i + 1] + spiralArray[i + 2];
-      term++;
-      spiralArray[term] = spiralArray[term - 1] + spiralArray[i + 1] + spiralArray[i + 2] + spiralArray[i + 3];
-      term++;
-      spiralArray[term] = spiralArray[term - 1] + spiralArray[i + 2] + spiralArray[i + 3];
-      term++;
-    }
-  }
-  while (term <= 40){
-    for (i = 12; i <= 16; i += 4){
-      spiralArray[term] = spiralArray[term - 1] + spiralArray[i];
-      term++;
-      spiralArray[term] = spiralArray[term - 1] + spiralArray[term - 2] + spiralArray[i] + spiralArray[i + 1];
-      term++;
-      spiralArray[term] = spiralArray[term - 1] + spiralArray[i] + spiralArray[i + 1] + spiralArray[i + 2];
-      term++;
-      spiralArray[term] = spiralArray[term - 1] + spiralArray[i + 1] + spiralArray[i + 2] + spiralArray[i + 3];
-      term++;
-      spiralArray[term] = spiralArray[term - 1] + spiralArray[i + 2] + spiralArray[i + 3] + spiralArray[i + 4];
-      term++;
-      spiralArray[term] = spiralArray[term - 1] + spiralArray[i + 3] + spiralArray[i + 4];
-      term++;
-    }
-  }
-  while (term <= 54){
-    for (i = 20; i <= 25; i += 5){
-      spiralArray[term] = spiralArray[term - 1] + spiralArray[i];
-      term++;
-      spiralArray[term] = spiralArray[term - 1] + spiralArray[term - 2] + spiralArray[i] + spiralArray[i + 1];
-      term++;
-      spiralArray[term] = spiralArray[term - 1] + spiralArray[i] + spiralArray[i + 1] + spiralArray[i + 2];
-      term++;
-      spiralArray[term] = spiralArray[term - 1] + spiralArray[i + 1] + spiralArray[i + 2] + spiralArray[i + 3];
-      term++;
-      spiralArray[term] = spiralArray[term - 1] + spiralArray[i + 2] + spiralArray[i + 3] + spiralArray[i + 4];
-      term++;
-      spiralArray[term] = spiralArray[term - 1] + spiralArray[i + 3] + spiralArray[i + 4] + spiralArray[i + 5];
-      term++;
-      spiralArray[term] = spiralArray[term - 1] + spiralArray[i + 4] + spiralArray[i + 5];
-      term++;
-    }
-  }
-  while (term <= 70){
-    for (i = 30; i <= 36; i += 6){
-      spiralArray[term] = spiralArray[term - 1] + spiralArray[i];
-      term++;
-      spiralArray[term] = spiralArray[term - 1] + spiralArray[term - 2] + spiralArray[i] + spiralArray[i + 1];
-      term++;
-      spiralArray[term] = spiralArray[term - 1] + spiralArray[i] + spiralArray[i + 1] + spiralArray[i + 2];
-      term++;
-      spiralArray[term] = spiralArray[term - 1] + spiralArray[i + 1] + spiralArray[i + 2] + spiralArray[i + 3];
-      term++;
-      spiralArray[term] = spiralArray[term - 1] + spiralArray[i + 2] + spiralArray[i + 3] + spiralArray[i + 4];
-      term++;
-      spiralArray[term] = spiralArray[term - 1] + spiralArray[i + 3] + spiralArray[i + 4] + spiralArray[i + 5];
-      term++;
-      spiralArray[term] = spiralArray[term - 1] + spiralArray[i + 4] + spiralArray[i + 5] + spiralArray[i + 6];
-      term++;
-      spiralArray[term] = spiralArray[term - 1] + spiralArray[i + 5] + spiralArray[i + 6];
-      term++;
-    }
-  }
-  for (i = 0; i < spiralArray.length; i++){
-    if (spiralArray[i] > num){
-      return console.log(spiralArray[i]);
-    }
-  }
+  
+  console.log(spiral);
 }
 
 findManhattanDist(347991);
