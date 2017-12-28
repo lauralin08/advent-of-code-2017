@@ -3,12 +3,14 @@
 #include <string>
 #include <cstring>
 #include <vector>
+#include <map>
 using std::ifstream;
 using std::string;
 using std::cout;
 using std::endl;
 using std::vector;
-using std::to_string;
+using std::map;
+using std::pair;
 
 string getTowerBottom()
 {
@@ -86,137 +88,27 @@ string getTowerBottom()
   return bottom;
 }
 
-int getCorrectWeight()
+void getCorrectWeight()
 {
-  class ProgramList
+  struct Tower
   {
-  protected:
-    struct ListNode
+    string base;
+    vector<string> balancers;
+    Tower(string b, vector<string> bal)
     {
-      string program;
-      int weight;
-      ListNode *next;
-      ListNode (string p, int w, ListNode *node = 0)
-      {
-        program = p;
-        weight = w;
-        next = node;
-      }
-    };
-    ListNode *head;
-  public:
-    void add(string p, int w)
-    {
-      if (head == 0)
-      {
-        head = new ListNode(p, w);
-      }
-      else
-      {
-        ListNode *nodePtr = head;
-        while (nodePtr->next != 0)
-        {
-          nodePtr = nodePtr->next;
-        }
-        nodePtr->next = new ListNode(p, w);
-      }
-    }
-    void moveDuplicates()
-    {
-      ListNode *nodePtr = head;
-      while (nodePtr != 0)
-      {
-        if (nodePtr->weight == 0)
-        {
-          ListNode *movePtr = head;
-          while (movePtr != 0)
-          {
-            if (movePtr->program == nodePtr->program && movePtr->weight != 0)
-            {
-              nodePtr->weight = movePtr->weight;
-              ListNode *garbage = movePtr;
-              movePtr = movePtr->next;
-              delete garbage;
-              garbage = 0;
-              movePtr = 0;
-            }
-          }
-        }
-        nodePtr = nodePtr->next;
-      }
-    }
-    // int positionOf(string p)
-    // {
-    //   int index = 0;
-    //   ListNode *nodePtr = head;
-    //   while (nodePtr != 0)
-    //   {
-    //     if (nodePtr->program == p)
-    //     {
-    //       return index;
-    //     }
-    //     else
-    //     {
-    //       index++;
-    //       nodePtr = nodePtr->next;
-    //     }
-    //   }
-    //   return -1;
-    // }
-    // bool setNodeVal(int i, string p, int w)
-    // {
-    //   int counter = i - 1;
-    //   ListNode *nodePtr = head;
-    //   while (counter >= 0)
-    //   {
-    //     if (nodePtr == 0)
-    //     {
-    //       return false;
-    //     }
-    //     else
-    //     {
-    //       counter--;
-    //       nodePtr = nodePtr->next;
-    //     }
-    //   }
-    //   nodePtr->program = p;
-    //   nodePtr->weight = w;
-    //   return true;
-    // }
-    vector<string> getAsVector()
-    {
-      vector<string> programs;
-      ListNode *nodePtr = head;
-      while (nodePtr != 0)
-      {
-        programs.push_back(nodePtr->program + ": " + to_string(nodePtr->weight));
-        nodePtr = nodePtr->next;
-      }
-      return programs;
-    }
-    ProgramList()
-    {
-      head = 0;
-    }
-    ~ProgramList()
-    {
-      ListNode *nodePtr = head;
-      while (nodePtr != 0)
-      {
-        ListNode *garbage = nodePtr;
-        nodePtr = nodePtr->next;
-        delete garbage;
-      }
+      base = b;
+      balancers = bal;
     }
   };
-
   int correctWeight;
+  map <string, int> programs;
+  vector<Tower> balancerList;
+
   ifstream inputFile;
   inputFile.open("./day7Input.txt");
   if (!inputFile.fail())
   {
     string row;
-    ProgramList programList;
     while (getline(inputFile, row))
     {
       char* input = new char[row.size() + 1];
@@ -233,7 +125,7 @@ int getCorrectWeight()
       }
       input[row.size()] = '\0';
 
-      vector<char*> temp;
+      vector<string> temp;
       char* token = strtok(input, " ");
       while (token != 0)
       {
@@ -241,34 +133,48 @@ int getCorrectWeight()
         token = strtok(0, " ");
       }
 
-      delete []token;
-      token = 0;
-
-      programList.add(temp[0], atoi(temp[1]));
-      for (int i = 3; i < temp.size(); i++)
-      {
-        programList.add(temp[i], 0);
-      }
-
       delete []input;
       input = 0;
-    }
-    
-    programList.moveDuplicates();
 
-    vector<string> programs = programList.getAsVector();
-    for (int i = 0; i < programs.size(); i++)
-    {
-      cout << programs[i] << endl;
+      if (temp.size() > 3)
+      {
+        vector<string> tempBalancers;
+        for (int i = 3; i < temp.size(); i++)
+        {
+          tempBalancers.push_back(temp[i]);
+        }
+        Tower tempTower = Tower(temp[0], tempBalancers);
+        balancerList.push_back(tempTower);
+      }
+      programs.insert(pair<string, int>(temp[0], stoi(temp[1])));
     }
   }
-
-
   inputFile.close();
 
-  cout << correctWeight << endl;
+  // string bottom = getTowerBottom();
+  // for (int i = 0; i < balancerList.size(); i++)
+  // {
+  //   if (balancerList[i].base == bottom)
+  //   {
+  //     cout << programs[bottom] << " -> ";
+  //     for (int j = 1; j < balancerList[i].balancers.size(); j++)
+  //     {
+  //       for (int k = 0; k < balancerList.size(); k++)
+  //       {
+          
+  //       }
+  //       cout << programs[balancerList[i].balancers[j]] << " ";
+  //     }
+  //     cout << endl;
+  //   }
+  // }
 
-  return correctWeight;
+  // for (auto elem : programs)
+  // {
+  //   cout << elem.first << ": " << elem.second << endl;
+  // }
+
+  cout << correctWeight << endl;
 }
 
 int main()
