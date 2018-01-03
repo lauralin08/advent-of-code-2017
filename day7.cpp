@@ -88,21 +88,46 @@ string getTowerBottom()
   return bottom;
 }
 
-void getCorrectWeight()
+struct Tower
 {
-  struct Tower
+  string base;
+  vector<Tower> balancers;
+  Tower(string b)
   {
-    string base;
-    vector<string> balancers;
-    Tower(string b, vector<string> bal)
+    base = b;
+  }
+};  
+
+long long int findTowerWeight(Tower t, vector<Tower> bL, map <string, int> p, int w)
+{
+  long long int towerWeight = w;
+  cout << towerWeight << endl;
+  bool hasTowers = false;
+  for (int i = 0; i < bL.size(); i++)
+  {
+    if (bL[i].base == t.base)
     {
-      base = b;
-      balancers = bal;
+      towerWeight += p[t.base];
+      cout << towerWeight << endl;
+      hasTowers = true;
+      for (int j = 1; j < bL[i].balancers.size(); j++)
+      {
+        towerWeight += findTowerWeight(bL[i].balancers[j], bL, p, towerWeight);
+        cout << towerWeight << endl;
+      }
+      return towerWeight;
     }
-  };
-  int correctWeight;
+  }
+  if (!hasTowers)
+  {
+    return towerWeight;
+  }
+}
+
+void getCulpritAndWeight(string bottom)
+{
   map <string, int> programs;
-  vector<Tower> balancerList;
+  vector<Tower> towerList;
 
   ifstream inputFile;
   inputFile.open("./day7Input.txt");
@@ -136,52 +161,41 @@ void getCorrectWeight()
       delete []input;
       input = 0;
 
+      programs.insert(pair<string, int>(temp[0], stoi(temp[1])));
+
       if (temp.size() > 3)
       {
-        vector<string> tempBalancers;
+        vector<Tower> tempBalancers;
         for (int i = 3; i < temp.size(); i++)
         {
-          tempBalancers.push_back(temp[i]);
+          Tower tempBalancer = Tower(temp[i]);
+          tempBalancers.push_back(tempBalancer);
         }
-        Tower tempTower = Tower(temp[0], tempBalancers);
-        balancerList.push_back(tempTower);
+        Tower tempTower = Tower(temp[0]);
+        tempTower.balancers = tempBalancers;
+        tempBalancers.clear();
+        towerList.push_back(tempTower);
       }
-      programs.insert(pair<string, int>(temp[0], stoi(temp[1])));
     }
   }
   inputFile.close();
 
-  // string bottom = getTowerBottom();
-  // for (int i = 0; i < balancerList.size(); i++)
-  // {
-  //   if (balancerList[i].base == bottom)
-  //   {
-  //     cout << programs[bottom] << " -> ";
-  //     for (int j = 1; j < balancerList[i].balancers.size(); j++)
-  //     {
-  //       for (int k = 0; k < balancerList.size(); k++)
-  //       {
-          
-  //       }
-  //       cout << programs[balancerList[i].balancers[j]] << " ";
-  //     }
-  //     cout << endl;
-  //   }
-  // }
-
-  // for (auto elem : programs)
-  // {
-  //   cout << elem.first << ": " << elem.second << endl;
-  // }
-
-  cout << correctWeight << endl;
+  for (int i = 0; i < towerList.size(); i++)
+  {
+    cout << towerList[i].base << ": " << programs[towerList[i].base] << " -> ";
+    for (int j = 0; j < towerList[i].balancers.size(); j++)
+    {
+      cout << towerList[i].balancers[j].base << ": " << programs[towerList[i].balancers[j].base] << " ";
+    }
+    cout << endl;
+  }
 }
 
 int main()
 {
-  getTowerBottom();
+  string bottom = getTowerBottom();
 
-  getCorrectWeight();
+  getCulpritAndWeight(bottom);
 
   return 0;
 }
