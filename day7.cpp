@@ -98,69 +98,61 @@ struct Tower
   }
 };  
 
-long long int findTowerWeight(Tower t, vector<Tower> tL, map <string, int> p)
-{
-  if (t.balancers.empty())
-  {
-    return p[t.base];
-  }
-  else
-  {
-    int balancerWeight = 0;
-    for (int i = 0; i < t.balancers.size(); i++)
-    {
-      balancerWeight += findTowerWeight(t.balancers[i], tL, p);
-    }
-    return balancerWeight + p[t.base];
-  }
-}
-
-pair<string, int> findCulprit(Tower t, vector<Tower> tL, map <string, int> p)
+long long int findTowerWeight(string b, vector<Tower> tL, map <string, int> p)
 {
   for (int i = 0; i < tL.size(); i++)
   {
-    if (tL[i].base == t.base)
+    if (tL[i].base == b)
     {
-      string culprit = "";
-      int correctWeight = findTowerWeight(tL[i].balancers[0], tL, p);
+      int balancerWeight = 0;
+      for (int j = 0; j < tL[i].balancers.size(); j++)
+      {
+        balancerWeight += findTowerWeight(tL[i].balancers[j].base, tL, p);
+      }
+      return balancerWeight + p[tL[i].base];
+    }
+  }
+  return p[b];
+}
+
+Tower findCulprit(string b, vector<Tower> tL, map <string, int> p)
+{
+  for (int i = 0; i < tL.size(); i++)
+  {
+    if (tL[i].base == b)
+    {
+      int testWeight, testWeight2, towerWeight = findTowerWeight(tL[i].balancers[0].base, tL, p);
       for (int j = 1; j < tL[i].balancers.size() - 1; j++)
       {
-        int tempWeight = findTowerWeight(tL[i].balancers[j], tL, p);
-        if (correctWeight != tempWeight)
+        testWeight = findTowerWeight(tL[i].balancers[j].base, tL, p);
+        if (towerWeight != testWeight)
         {
-          if (tempWeight == findTowerWeight(tL[i].balancers[j + 1], tL, p))
+          testWeight2 = findTowerWeight(tL[i].balancers[j + 1].base, tL, p);
+          if (testWeight == testWeight2)
           {
-            correctWeight = tempWeight;
-            culprit = tL[i].balancers[0].base;
-            cout << culprit << " " << correctWeight << endl;
-            return findCulprit(tL[i].balancers[0], tL, p);
+            return findCulprit(tL[i].balancers[0].base, tL, p);
           }
           else
           {
-            culprit = tL[i].balancers[j].base;
-            cout << culprit << " " << correctWeight << endl;
-            return findCulprit(tL[i].balancers[j], tL, p);
+            return findCulprit(tL[i].balancers[j].base, tL, p);
           }
         }
       }
-      if (culprit == "")
+      testWeight = findTowerWeight(tL[i].balancers[tL[i].balancers.size() - 1].base, tL, p);
+      testWeight2 = findTowerWeight(tL[i].balancers[tL[i].balancers.size() - 2].base, tL, p);
+      if (testWeight != testWeight2)
       {
-        if (correctWeight == findTowerWeight(tL[i].balancers[tL[i].balancers.size() - 1], tL, p))
-        {
-          return pair<string, int>(culprit, correctWeight);
-        }
-        else
-        {
-          culprit = tL[i].balancers[tL[i].balancers.size() - 1].base;
-          cout << culprit << " " << correctWeight << endl;
-          return findCulprit(tL[i].balancers[tL[i].balancers.size() - 1], tL, p);
-        }
+        return findCulprit(tL[i].balancers[tL[i].balancers.size() - 1].base, tL, p);
+      }
+      else
+      {
+        return tL[i];
       }
     }
   }
 }
 
-void getCulpritAndWeight(string bottom)
+int getCorrectWeight(string bottom)
 {
   map <string, int> programs;
   vector<Tower> towerList;
@@ -216,40 +208,47 @@ void getCulpritAndWeight(string bottom)
   }
   inputFile.close();
 
+  string culprit;
   for (int i = 0; i < towerList.size(); i++)
   {
     if (towerList[i].base == bottom)
     {
-      pair<string, int> solution = findCulprit(towerList[i], towerList, programs);
-      cout << solution.first << ": " << solution.second << endl;
+      culprit = findCulprit(towerList[i].base, towerList, programs).base;
     }
   }
-  
-//   for (int i = 0; i < towerList.size(); i++)
-//   {
-//     cout << towerList[i].base << ": " << programs[towerList[i].base] << " -> ";
-//     for (int j = 0; j < towerList[i].balancers.size(); j++)
-//     {
-//       cout << towerList[i].balancers[j].base << ": " << programs[towerList[i].balancers[j].base] << " ";
-//     }
-//     cout << endl;
-//   }
 
-//   for (auto &elem : programs)
-//   {
-//     for (int i = 0; i < towerList.size(); i++)
-//     {
+  cout << culprit << endl;
+  int correctWeight = 0;
+  for (int i = 0; i < towerList.size(); i++)
+  {
+    for (int j = 0; j < towerList[i].balancers.size(); j++)
+    {
+      if (towerList[i].balancers[j].base == culprit)
+      {
+        correctWeight = findTowerWeight(towerList[i].balancers[j + 1].base, towerList, programs);
+      }
+    }
+  }
 
-//     }
-//     cout << elem.first << ": " << elem.second << endl;
-//   }
+  for (int i = 0; i < towerList.size(); i++)
+  {
+    if (towerList[i].base == culprit)
+    {
+      for (int j = 0; j < towerList[i].balancers.size(); j++)
+      {
+        int temp = findTowerWeight(towerList[i].balancers[j].base, towerList, programs);
+        correctWeight -= temp;
+      }
+      return correctWeight;
+    }
+  }
 }
 
 int main()
 {
   string bottom = getTowerBottom();
 
-  getCulpritAndWeight(bottom);
+  cout << getCorrectWeight(bottom) << endl;
 
   return 0;
 }
